@@ -65,4 +65,30 @@ public class Queue<T> implements Iterable<T> {
     public Iterator<T> iterator() {
         return new QueueIterator();
     }
+
+    public Queue<T> reverse() {
+        Queue<T> result = new Queue<T>();
+        Node current = last;
+        while (current != null) {
+            result.enqueue(current.item);
+            current = getParentNode(current, this);
+        }
+        return result;
+    }
+
+    private Node getParentNode(Node current, Queue<T> source) {
+        Node start = source.first;
+
+        if (start == current) {
+            return null;
+        }
+
+        while(start.next != null) {
+            if(start.next == current) {
+                return start;
+            }
+            start = start.next;
+        }
+        return null;
+    }
 }

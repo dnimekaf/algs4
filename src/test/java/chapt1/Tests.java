@@ -4,8 +4,16 @@ import algorithms.chapt1.*;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
 import org.apache.commons.lang3.time.StopWatch;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Tests {
@@ -171,6 +179,47 @@ public class Tests {
         var tested = new ThreeSumFast(new BinarySearch());
         var ratio = new DoublingRatio();
         ratio.run(tested);
+    }
+
+    @Test
+    public void ReverseTest() {
+        var tested = new Queue<Integer>();
+        tested.enqueue(1);
+        tested.enqueue(2);
+        tested.enqueue(3);
+        tested.enqueue(4);
+        tested.enqueue(5);
+        var reversed = tested.reverse();
+        assertEquals(5, reversed.dequeue());
+        assertEquals(4, reversed.dequeue());
+        assertEquals(3, reversed.dequeue());
+        assertEquals(2, reversed.dequeue());
+        assertEquals(1, reversed.dequeue());
+        assertEquals(1, tested.dequeue());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"tinyUF.txt", "mediumUF.txt", "largeUF.txt"})
+    public void WeightedUFTest(String filename) throws FileNotFoundException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("data/" + filename).getFile());
+        Scanner sc = new Scanner(file);
+        var firstList = sc.nextLine();
+        int numDigits = Integer.parseInt(firstList);
+        var tested = new WeightedQuickUnionUF(numDigits);
+        StopWatch sw = new StopWatch();
+        sw.start();
+        while(sc.hasNext()){
+            String nextLine = sc.nextLine();
+            String[] parts = nextLine.split(" ");
+            tested.union(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+        }
+
+        sw.stop();
+        System.out.println(String.format("Elapsed: %s", sw.getTime())); // 1 24 2136
+
+
+
     }
 
 
